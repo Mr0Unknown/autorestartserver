@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="autorestartserver:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/autorestartserver_jar</output-path>
+    <root id="archive" name="autorestartserver.jar">
+      <element id="file-copy" path="$PROJECT_DIR$/src/plugin.yml" />
+      <element id="module-output" name="autorestartserver" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/config.yml" />
+    </root>
+  </artifact>
+</component>
