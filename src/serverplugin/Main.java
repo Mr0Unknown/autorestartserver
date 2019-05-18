@@ -1,8 +1,12 @@
 package serverplugin;
 
+import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 
@@ -14,11 +18,34 @@ import java.io.File;
  */
 public class Main extends JavaPlugin{
     private JavaPlugin plugin;
+    private BukkitTask restart;
     private FileConfiguration config;
     public int s;
-    public Main(JavaPlugin plugin) {
-        this.plugin = plugin;
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if(label.equalsIgnoreCase("autorestartreload")){
+            if(!sender.hasPermission("autorestartserver.reload")){
+                sender.sendMessage("§c你没有权限这么做");
+                return true;
+            }
+            else {
+                try {
+                    this.reloadConfig();
+                    this.config = this.getConfig();
+                    this.s = config.getInt("seconds");
+                    sender.sendMessage("§e配置文件重载成功");
+                }
+                catch (Exception e){
+                    this.saveDefaultConfig();
+                    sender.sendMessage("发生了点错误");
+                }
+                return true;
+            }
+        }
+        return false;
     }
+
     @Override
     public void onEnable() {
         getLogger().info("已载入插件AutoReStartServer");
@@ -30,57 +57,59 @@ public class Main extends JavaPlugin{
         }
         this.reloadConfig();
         this.config = this.getConfig();
-        this.s = this.config.getInt("Numbers.Seconds");
-        new BukkitRunnable() {
+        this.s = config.getInt("seconds");
+        this.restart = new BukkitRunnable() {
             @Override
             public void run() {
                 s--;
                 if (s == 0) {
-                    plugin.getServer().shutdown();
+                    Bukkit.getServer().broadcastMessage("开始重启");
+                    Bukkit.shutdown();
                 }
                 if (s == 3600) {
-                    plugin.getServer().broadcastMessage("服务器将在1小时后重启");
+                    Bukkit.getServer().broadcastMessage("服务器将在1小时后重启");
                 }
                 if (s == 300) {
-                    plugin.getServer().broadcastMessage("服务器将在5分钟后重启");
+                    Bukkit.getServer().broadcastMessage("服务器将在5分钟后重启");
                 }
                 if (s == 120) {
-                    plugin.getServer().broadcastMessage("服务器将在2分钟后重启");
+                    Bukkit.getServer().broadcastMessage("服务器将在2分钟后重启");
                 }
                 if (s == 60) {
-                    plugin.getServer().broadcastMessage("服务器将在1分钟后重启");
+                    Bukkit.getServer().broadcastMessage("服务器将在1分钟后重启");
                 }
                 if (s == 30) {
-                    plugin.getServer().broadcastMessage("服务器将在30秒后重启");
+                    Bukkit.getServer().broadcastMessage("服务器将在30秒后重启");
                 }
                 if (s == 15) {
-                    plugin.getServer().broadcastMessage("服务器将在15秒后重启");
+                    Bukkit.getServer().broadcastMessage("服务器将在15秒后重启");
                 }
                 if (s == 10) {
-                    plugin.getServer().broadcastMessage("服务器将在10秒后重启");
+                    Bukkit.getServer().broadcastMessage("服务器将在10秒后重启");
                 }
-                if (s == 55) {
-                    plugin.getServer().broadcastMessage("服务器将在5秒后重启");
+                if (s == 5) {
+                    Bukkit.getServer().broadcastMessage("服务器将在5秒后重启");
                 }
                 if (s == 4) {
-                    plugin.getServer().broadcastMessage("服务器将在4秒后重启");
+                    Bukkit.getServer().broadcastMessage("服务器将在4秒后重启");
                 }
                 if (s == 3) {
-                    plugin.getServer().broadcastMessage("服务器将在3秒后重启");
+                    Bukkit.getServer().broadcastMessage("服务器将在3秒后重启");
                 }
                 if (s == 2) {
-                    plugin.getServer().broadcastMessage("服务器将在2秒后重启");
+                    Bukkit.getServer().broadcastMessage("服务器将在2秒后重启");
                 }
                 if (s == 1) {
-                    plugin.getServer().broadcastMessage("服务器将在1秒后重启");
+                    Bukkit.getServer().broadcastMessage("服务器将在1秒后重启");
                 }
             }
-        }.runTaskTimer(this.plugin, 0, 20);
+        }.runTaskTimer(this, 0, 20);
         //定时器
     }
 
     @Override
     public void onDisable() {
         getLogger().info("已卸载插件AutoReStartServer");
+        this.restart.cancel();
     }
 }

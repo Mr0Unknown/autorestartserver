@@ -1,3 +1,11 @@
 name: autorestartserver
 main: serverplugin.Main
-version: 1.0.0
+version: 2.1.1
+commands:
+  AutoRestartReload:
+    description: reload this plugin config
+    permission: autorestartreload.reload
+permissions:
+  autorestartreload.reload:
+    description: You can reload this plugin config
+    default: op
